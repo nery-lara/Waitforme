@@ -2,7 +2,7 @@ class CallsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def begin
-  	response = Twilio::TwiML::VoiceResponse.new do |r|
+    response = Twilio::TwiML::VoiceResponse.new do |r|
       r.say(message: 'Please enter the number you wish to call')
       r.gather(numDigits: 10,
                     action: '/calls/dial',
