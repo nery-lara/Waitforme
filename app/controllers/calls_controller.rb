@@ -1,12 +1,7 @@
 class CallsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  #skip_before_filter :authenticate_user!, :only => "reply"	
 
   def begin
-  	customer_number = params["From"]
-  	twilio_number = ENV["TWILIO_NUMBER"]
-  	boot_twilio
-  	
   	response = Twilio::TwiML::VoiceResponse.new do |r|
       r.say(message: 'Please enter the number you wish to call')
       r.gather(numDigits: 10,
