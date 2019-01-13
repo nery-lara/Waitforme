@@ -4,4 +4,8 @@ Rails.application.routes.draw do
   post 'calls/answered'
   post 'calls/conference'
   post 'calls/waitforme'
+  post 'calls/confirmwait'
+  post 'calls/rejoinconference'
+  post 'calls/hangup'
+
 end
