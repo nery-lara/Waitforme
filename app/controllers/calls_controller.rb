@@ -136,9 +136,9 @@ class CallsController < ApplicationController
   private
   def boot_twilio
   	#account_sid = ENV["TWILIO_SID"]
-    account_sid = 'AC14a0fc7958eb5a457b937744ac590ac4'
+    account_sid = ''
   	#auth_token = ENV["TWILIO_AUTH"]
-    auth_token = '1ac75e253415d780d1a29466adfaee02'
+    auth_token = ''
   	@@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 end
