@@ -1,4 +1,4 @@
-class ForwardCall < ApplicationRecord
+class ForwardCall
     attr_reader :number
 
     def initialize(number)
@@ -25,7 +25,7 @@ class ForwardCall < ApplicationRecord
     	'POST'
     end
 
-    def numdights
+    def numdigits
     	2
     end
 

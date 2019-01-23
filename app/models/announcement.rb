@@ -1,4 +1,4 @@
-class Announcement < ApplicationRecord
+class Announcement
 
 	def msg
 		'This is an announcement'

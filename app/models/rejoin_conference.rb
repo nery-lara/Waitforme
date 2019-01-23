@@ -1,4 +1,4 @@
-class RejoinConference < ApplicationRecord
+class RejoinConference
 
 	def redirect
 		'/calls/rejoinconference'
@@ -16,7 +16,7 @@ class RejoinConference < ApplicationRecord
     	'POST'
     end
 
-    def numdights
+    def numdigits
     	2
     end
 end

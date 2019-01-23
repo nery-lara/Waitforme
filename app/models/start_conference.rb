@@ -1,4 +1,4 @@
-class StartConference < ApplicationRecord
+class StartConference
 
 	def message
 		'Please enter the number you wish to call'
@@ -8,11 +8,11 @@ class StartConference < ApplicationRecord
 		'/calls/dial'
 	end
 
-	def method
+	def request_method
 		'POST'
 	end
 
-	def num_digits
+	def numdigits
 		10
 	end
 end
