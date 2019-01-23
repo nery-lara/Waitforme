@@ -10,7 +10,7 @@ class VoiceResponse < ApplicationRecord
             response.say(message: @call.message)
             response.gather(numDigits: @call.num_digits,
             action: @call.endpoint,
-            method: @call.method)
+            method: @call.method_request)
             end
 
         when ForwardCall
