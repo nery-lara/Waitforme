@@ -2,7 +2,7 @@ class VoiceResponse < ApplicationRecord
 
 	def initialize(call)
 		@call = call
-		@con_call = conference_call.new
+		@con_call = ConferenceCall.new
 
 		case @call
 		when StartConference
