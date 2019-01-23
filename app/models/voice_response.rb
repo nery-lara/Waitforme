@@ -1,4 +1,4 @@
-class VoiceResponse < ApplicationRecord
+class VoiceResponse
     def initialize(call)
         @call = call
         @con_call = ConferenceCall.new
@@ -21,6 +21,7 @@ class VoiceResponse < ApplicationRecord
                                        statusCallbackEvent:@con_call.statusCallbackEvent, 
                                        statusCallback:@con_call.statusCallback,
                                        statusCallbackMethod:@con_call.statusCallbackMethod)
+                 end
                    response.gather(action: @call.action, method: @call.request_method, numdigits: @call.numdigits)
                    response.redirect('/calls/rejoinconference')
             end
@@ -43,6 +44,7 @@ class VoiceResponse < ApplicationRecord
                                       statusCallbackEvent:@con_call.statusCallbackEvent, 
                                       statusCallback:@con_call.statusCallback,
                                       statusCallbackMethod:@con_call.statusCallbackMethod)
+               end
             end
 
         when Announcement
@@ -57,15 +59,16 @@ class VoiceResponse < ApplicationRecord
                                         statusCallbackEvent:@con_call.statusCallbackEvent, 
                                         statusCallback:@con_call.statusCallback,
                                         statusCallbackMethod:@con_call.statusCallbackMethod)
-                end
+                  end
                 response.gather(action: @call.action, method: @call.request_method, numdigits: @call.numdigits)
                 response.redirect(@call.redirect)
+              end
         else
             raise 'Invalid Call Type'
         end
     end
 
-    def xml 
+    def xml
         render xml: @response.to_s
     end
 end

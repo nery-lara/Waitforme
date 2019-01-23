@@ -1,4 +1,4 @@
-class ConfirmWait < ApplicationRecord
+class ConfirmWait
 	attr_reader :input
 
 	def initialize(input)

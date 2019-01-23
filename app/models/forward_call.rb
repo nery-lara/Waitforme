@@ -1,4 +1,4 @@
-class ForwardCall < ApplicationRecord
+class ForwardCall
     attr_reader :number
 
     def initialize(number)

@@ -1,4 +1,4 @@
-class ConferenceCall < ApplicationRecord
+class ConferenceCall
 
 	def muted
     	'False'

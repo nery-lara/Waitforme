@@ -1,4 +1,4 @@
-class RejoinConference < ApplicationRecord
+class RejoinConference
 
 	def redirect
 		'/calls/rejoinconference'

@@ -1,4 +1,4 @@
-class Answered < ApplicationRecord
+class Answered
 
 	def msg
 		'you answered the call'

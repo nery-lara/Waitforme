@@ -1,4 +1,4 @@
-class StartConference < ApplicationRecord
+class StartConference
 
 	def message
 		'Please enter the number you wish to call'
