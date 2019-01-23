@@ -8,11 +8,11 @@ class StartConference
 		'/calls/dial'
 	end
 
-	def method_request
+	def request_method
 		'POST'
 	end
 
-	def num_digits
+	def numdigits
 		10
 	end
 end

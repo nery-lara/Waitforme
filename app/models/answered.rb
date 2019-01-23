@@ -4,4 +4,8 @@ class Answered
 		'you answered the call'
 	end
 
+	def hangupOnStar
+		'true'
+	end
+
 end
