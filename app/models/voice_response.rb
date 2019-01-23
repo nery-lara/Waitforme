@@ -7,9 +7,9 @@ class VoiceResponse
         when StartConference
             @response = Twilio::TwiML::VoiceResponse.new do |response| 
                 response.say(message: @call.message)
-                response.gather(numDigits: @call.num_digits,
+                response.gather(numDigits: @call.numdigits,
                                 action: @call.endpoint,
-                                method: @call.method)
+                                method: @call.request_method)
             end
 
         when ForwardCall
@@ -24,7 +24,9 @@ class VoiceResponse
                  end
                    response.gather(action: @call.action, method: @call.request_method, numdigits: @call.numdigits)
                    response.redirect('/calls/rejoinconference')
+                end
             end
+
 
         when ConfirmWait
             @response = Twilio::TwiML::VoiceResponse.new do |response|
@@ -44,7 +46,7 @@ class VoiceResponse
                                       statusCallbackEvent:@con_call.statusCallbackEvent, 
                                       statusCallback:@con_call.statusCallback,
                                       statusCallbackMethod:@con_call.statusCallbackMethod)
-               end
+              end
             end
 
         when Announcement
@@ -62,13 +64,13 @@ class VoiceResponse
                   end
                 response.gather(action: @call.action, method: @call.request_method, numdigits: @call.numdigits)
                 response.redirect(@call.redirect)
-              end
+            end
         else
             raise 'Invalid Call Type'
         end
     end
 
-    def xml
-        render xml: @response.to_s
+    def xml 
+        @response.to_s
     end
 end

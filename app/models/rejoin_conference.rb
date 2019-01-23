@@ -16,7 +16,7 @@ class RejoinConference
     	'POST'
     end
 
-    def numdights
+    def numdigits
     	2
     end
 end

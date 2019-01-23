@@ -12,7 +12,7 @@ class StartConference
 		'POST'
 	end
 
-	def num_digits
+	def numdigits
 		10
 	end
 end

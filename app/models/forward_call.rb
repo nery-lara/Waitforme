@@ -25,7 +25,7 @@ class ForwardCall
     	'POST'
     end
 
-    def numdights
+    def numdigits
     	2
     end
 
