@@ -31,8 +31,8 @@ class ForwardCallTest < ActiveSupport::TestCase
     assert_equal 'POST', forward.request_method
   end
 
-  test 'Numdights' do
+  test 'Numdigits' do
     forward = ForwardCall.new('3')
-    assert_equal 2, forward.numdights
+    assert_equal 2, forward.numdigits
   end
 end

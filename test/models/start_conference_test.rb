@@ -16,8 +16,8 @@ class StartConferenceTest < ActiveSupport::TestCase
     assert_equal 'POST', start.request_method
   end
 
-  test 'Num_digits' do
+  test 'Numdigits' do
     start = StartConference.new
-    assert_equal 10, start.num_digits
+    assert_equal 10, start.numdigits
   end
 end

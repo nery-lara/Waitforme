@@ -21,8 +21,8 @@ class RejoinConferenceTest < ActiveSupport::TestCase
     assert_equal 'POST', rejoin.request_method
   end
 
-  test 'Numdights' do
+  test 'Numdigits' do
     rejoin = RejoinConference.new
-    assert_equal 2, rejoin.numdights
+    assert_equal 2, rejoin.numdigits
   end
 end
