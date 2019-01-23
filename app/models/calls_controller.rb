@@ -6,7 +6,7 @@ class CallsController < ApplicationController
   @@business_callSid = ""
 
   def startconference
-  	puts 'inside startconference'
+    puts 'inside startconference'
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
     puts 'user callsid ' + @@user_callSid
@@ -14,93 +14,93 @@ class CallsController < ApplicationController
     response = VoiceResponse.new(start_conference)
     response.xml
 
-  def dial
-  	boot_twilio
-    @@dial_number = params['Digits']
-    @call = @@client.calls.create(
+    def dial
+     boot_twilio
+     @@dial_number = params['Digits']
+     @call = @@client.calls.create(
       url: "http://c0ae5a76.ngrok.io/calls/answered",
       to: @@dial_number,
       from: @@user_number
-    )
-    forward_call = ForwardCall(@@dial_number)
-  	response = VoiceResponse.new(forward_call)
-  	response.xml
+      )
+     forward_call = ForwardCall(@@dial_number)
+     response = VoiceResponse.new(forward_call)
+     response.xml
 
-  def answered
-  	@@business_callSid = params['CallSid']
-    puts 'business callsid ' + @@business_callSid
-    answered_msg = Answered.new
-    response = VoiceResponse.new(answered_msg)
-    response.xml
+     def answered
+       @@business_callSid = params['CallSid']
+       puts 'business callsid ' + @@business_callSid
+       answered_msg = Answered.new
+       response = VoiceResponse.new(answered_msg)
+       response.xml
 
-  def conference
-    @event = params["StatusCallbackEvent"]
-    if @event == "participant-leave" and @@has_called == "false" and params['CallSid'] == @@user_callSid
-      conference = @@client.conferences("conference").update(status: 'completed')
-      @@has_called = 'true'
-    end
+       def conference
+        @event = params["StatusCallbackEvent"]
+        if @event == "participant-leave" and @@has_called == "false" and params['CallSid'] == @@user_callSid
+          conference = @@client.conferences("conference").update(status: 'completed')
+          @@has_called = 'true'
+        end
 
-    if @event == "participant-leave" and params['CallSid'] == @@business_callSid
-      puts 'end the whole thing, the business hung up'
-      conference = @@client.conferences("conference").update(status: 'completed')
-    end
+        if @event == "participant-leave" and params['CallSid'] == @@business_callSid
+          puts 'end the whole thing, the business hung up'
+          conference = @@client.conferences("conference").update(status: 'completed')
+        end
 
-    if @event == "participant-join"
-      puts 'someone is joining the conference'
-      if params["CallSid"] == @@user_callSid
-        puts 'user is joining the conference'
-        puts 'there callsid is ' + params['CallSid']
+        if @event == "participant-join"
+          puts 'someone is joining the conference'
+          if params["CallSid"] == @@user_callSid
+            puts 'user is joining the conference'
+            puts 'there callsid is ' + params['CallSid']
+          end
+        end  
       end
-    end  
-  end
 
-  def waitforme
+      def waitforme
     #detect when off hold
     #call user back
     call = @@client.calls.create(
       url: "http://c0ae5a76.ngrok.io/calls/rejoinconference",
       from: @@dial_number,
       to: @@user_number
-    )
+      )
     #join conference
   end
 
   def announcement
-  	announce = Announcement.new
-  	response = VoiceResponse.new(announce)
-  	response.xml
+    announce = Announcement.new
+    response = VoiceResponse.new(announce)
+    response.xml
   end
 
   def confirmwait
-  	input = params['Digits']
-  	confirm_wait = ConfirmWait.new(input)
-  	response = VoiceResponse.new(confirm_wait)
-  	response.xml
+    input = params['Digits']
+    confirm_wait = ConfirmWait.new(input)
+    response = VoiceResponse.new(confirm_wait)
+    response.xml
   end
 
   def hangup
     response = Twilio::TwiML::VoiceResponse.new do |r|
-        r.hangup
+      r.hangup
     end
     waitforme
     render xml: response.to_s
   end
 
   def rejoinconference
-  	@@user_callSid = params['CallSid']
-  	rejoin_conference = RejoinConference.new
-  	response = VoiceResponse.new(rejoin_conference)
-  	redner xml: response.xml
+    @@user_callSid = params['CallSid']
+    rejoin_conference = RejoinConference.new
+    response = VoiceResponse.new(rejoin_conference)
+    redner xml: response.xml
   end
 
 
   private
   def boot_twilio
-  	#account_sid = ENV["TWILIO_SID"]
+    #account_sid = ENV["TWILIO_SID"]
     account_sid = ''
-  	#auth_token = ENV["TWILIO_AUTH"]
+    #auth_token = ENV["TWILIO_AUTH"]
     auth_token = ''
-  	@@client = Twilio::REST::Client.new(account_sid, auth_token)
+    @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 end
 
