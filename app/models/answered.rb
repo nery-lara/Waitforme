@@ -1,5 +1,4 @@
 class Answered
-
 	def msg
 		'you answered the call'
 	end
@@ -7,5 +6,4 @@ class Answered
 	def hangupOnStar
 		'true'
 	end
-
 end
