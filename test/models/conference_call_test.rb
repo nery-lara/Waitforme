@@ -18,11 +18,11 @@ class ConferenceCallTest < ActiveSupport::TestCase
 
   test 'StatusCallback' do
     conference = ConferenceCall.new
-    assert_equal '/calls/conference', conference.muted
+    assert_equal '/calls/conference', conference.statusCallback
   end
 
   test 'StatusCallbackMethod' do
     conference = ConferenceCall.new
-    assert_equal 'POST', conference.muted
+    assert_equal 'POST', conference.statusCallbackMethod
   end
 end
