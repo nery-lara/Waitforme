@@ -11,9 +11,9 @@ class StartConferenceTest < ActiveSupport::TestCase
     assert_equal '/calls/dial', start.endpoint
   end
 
-  test 'Method_request' do
+  test 'Request_method' do
     start = StartConference.new
-    assert_equal 'POST', start.method_request
+    assert_equal 'POST', start.request_method
   end
 
   test 'Num_digits' do

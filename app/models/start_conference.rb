@@ -8,7 +8,7 @@ class StartConference
 		'/calls/dial'
 	end
 
-	def method_request
+	def request_method
 		'POST'
 	end
 
