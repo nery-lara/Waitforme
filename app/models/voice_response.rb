@@ -32,9 +32,9 @@ class VoiceResponse
             @response = Twilio::TwiML::VoiceResponse.new do |response|
                 if @call.input == '00'
                     response.say(message: @call.message3)
-                    response.redirect(@call.endpoint1, @call.request)
+                    response.redirect(@call.endpoint1, method:@call.request)
                 else
-                    response.redirect(@call.endpoint2, @call.request)
+                    response.redirect(@call.endpoint2, method:@call.request)
                 end
             end
 

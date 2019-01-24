@@ -73,7 +73,7 @@ class CallsController < ApplicationController
   end
 
   def confirmwait
-    input = params['Digits']
+    input = params['Digits'].join
     confirm_wait = ConfirmWait.new(input)
     response = VoiceResponse.new(confirm_wait)
     render xml: response.xml
@@ -91,7 +91,7 @@ class CallsController < ApplicationController
     @@user_callSid = params['CallSid']
     rejoin_conference = RejoinConference.new
     response = VoiceResponse.new(rejoin_conference)
-    redner xml: response.xml
+    render xml: response.xml
   end
 
 
