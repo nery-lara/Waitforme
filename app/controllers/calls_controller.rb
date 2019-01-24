@@ -1,6 +1,6 @@
 class CallsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  @@user_number = "8055709761"
+  @@user_number = ""
   @@has_called = "false"
   @@user_callSid = ""
   @@business_callSid = ""
@@ -98,9 +98,9 @@ class CallsController < ApplicationController
   private
   def boot_twilio
     #account_sid = ENV["TWILIO_SID"]
-    account_sid = 'ACa308c4ef25ced1bcfdd16b2ab39b4c98'
+    account_sid = ''
     #auth_token = ENV["TWILIO_AUTH"]
-    auth_token = 'cd88c7606f8b35b059b0ad50ace29b10'
+    auth_token = ''
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 end
