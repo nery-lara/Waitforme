@@ -1,15 +1,18 @@
 class CallsController < ApplicationController
   skip_before_action :verify_authenticity_token
   @@user_number = ""
-  @@has_called = "false"
+  @@has_called = ""
   @@user_callSid = ""
   @@business_callSid = ""
+  @@waitforme = false
+  @@url = 'http://27831803.ngrok.io'
+  Rails.logger = Logger.new(STDOUT)
 
-  def startconference
-    puts 'inside startconference'
+  def start
+    logger.debug 'inside start'
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
-    puts 'user callsid ' + @@user_callSid
+    logger 'user callsid ' + @@user_callSid
     start_conference = StartConference.new
     response = VoiceResponse.new(start_conference)
     render xml: response.xml
@@ -29,50 +32,61 @@ class CallsController < ApplicationController
 
   def answered
     @@business_callSid = params['CallSid']
-    puts 'business callsid ' + @@business_callSid
+    logger.debug 'business callsid ' + @@business_callSid
     answered_msg = Answered.new
     response = VoiceResponse.new(answered_msg)
     render xml: response.xml
   end
 
   def conference
+    logger.debug 'user left conference'
     @event = params["StatusCallbackEvent"]
-    if @event == "participant-leave" and @@has_called == "false" and params['CallSid'] == @@user_callSid
-      conference = @@client.conferences("conference").update(status: 'completed')
-      @@has_called = 'true'
+    if @event == "participant-leave" and params['CallSid'] == @@user_callSid
+      logger.debug 'conference sid: ' + @@conference_Sid
+      logger.debug 'user left conference'
     end
 
     if @event == "participant-leave" and params['CallSid'] == @@business_callSid
-      puts 'end the whole thing, the business hung up'
-      conference = @@client.conferences("conference").update(status: 'completed')
+      logger.debug 'end the whole thing, the business hung up'
+      hangup_user
     end
 
     if @event == "participant-join"
-      puts 'someone is joining the conference'
+      logger.debug 'someone is joining the conference'
       if params["CallSid"] == @@user_callSid
-        puts 'user is joining the conference'
-        puts 'there callsid is ' + params['CallSid']
+        logger.debug 'user is joining the conference'
+        logger.debug 'their callsid is ' + params['CallSid']
+        @@conference_Sid = params['ConferenceSid']
+        logger.debug 'conference Sid is:' + @@conference_Sid
+        user = @@client.conferences(@@conference_Sid).fetch
+        logger.debug 'here' + user.friendly_name
+        announce = @@client.conferences(@@conference_Sid).participants(@@user_callSid).update(announce_url: @@url + "/calls/connect")
+      end
+      if params["CallSid"] == @@business_callSid
+        logger.debug 'business is joining the conference'
+        logger.debug 'their callsid is ' + params['CallSid']
       end
     end
   end
 
-  def waitforme
+  def wait_for_me
     #detect when off hold
     #call user back
     call = @@client.calls.create(
-      url: "https://8ac58911.ngrok.io/calls/rejoinconference",
+      url: @@url + "/calls/rejoinconference",
       from: @@dial_number,
-      to: @@user_number)
+      to: @@user_number
+    )
     #join conference
   end
 
-  def announcement
+  def connect
     announce = Announcement.new
     response = VoiceResponse.new(announce)
     response.xml
   end
 
-  def confirmwait
+  def confirm_wait
     input = params['Digits'].join
     confirm_wait = ConfirmWait.new(input)
     response = VoiceResponse.new(confirm_wait)
@@ -80,10 +94,10 @@ class CallsController < ApplicationController
   end
 
   def hangup
-    response = Twilio::TwiML::VoiceResponse.new do |r|
-      r.hangup
+    response = Twilio::TwiML::VoiceResponse.new do |response|
+      response.hangup
     end
-    waitforme
+    wait_for_me
     render xml: response.to_s
   end
 
@@ -94,12 +108,47 @@ class CallsController < ApplicationController
     render xml: response.xml
   end
 
+  def check_wait_or_exit
+    #call = @@client.calls(@@user_callSid).fetch
+    if params['CallStatus'] == 'completed'
+      logger.debug 'user call completed, hang up business'
+        hangup_business
+    else
+      logger.debug 'user call not completed'
+      response = Twilio::TwiML::VoiceResponse.new do |response|
+        response.gather(action: '/calls/confirm_wait', method: 'POST', numdigits: 2)
+        response.redirect('/calls/rejoin_conference')
+      end
+      render xml: response.to_s
+    end
+  end
+
+  def hangup_business
+    @@client.calls(@@business_callSid).update(status: 'completed')
+  end
+
+  def hangup_user
+    @@client.calls(@@user_callSid).update(status: 'completed')
+  end
+
+  def status_change
+    #status changes only for user, not the business
+    callsid = params['CallSid']
+    status = params['CallStatus']
+    logger.debug 'call status changed'
+    logger.debug 'call sid:' + callsid
+    if callsid == @@user_callSid
+      logger.debug 'user status changed'
+      if status == 'completed'
+        logger.debug 'user status is complete'
+      end
+    end
+  end
+
 
   private
   def boot_twilio
-    #account_sid = ENV["TWILIO_SID"]
     account_sid = ''
-    #auth_token = ENV["TWILIO_AUTH"]
     auth_token = ''
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
