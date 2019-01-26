@@ -1,11 +1,11 @@
 class CallsController < ApplicationController
   skip_before_action :verify_authenticity_token
   @@user_number = ""
+  @@has_called = ""
   @@user_callSid = ""
   @@business_callSid = ""
-  @@conference_Sid = ""
-  @@wait_for_me = false
-  @@url = 'http://27831803.ngrok.io'
+  @@waitforme = false
+  @@url = 'http://25a3a11c.ngrok.io'
   Rails.logger = Logger.new(STDOUT)
 
   def start
@@ -13,13 +13,9 @@ class CallsController < ApplicationController
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
     logger.debug 'user callsid ' + @@user_callSid
-    response = Twilio::TwiML::VoiceResponse.new do |response|
-      response.say(message: 'Please enter the number you wish to call')
-      response.gather(numDigits: 10,
-                    action: '/calls/dial',
-                    method: 'POST')
-    end
-    render xml: response.to_s
+    start_conference = StartConference.new
+    response = VoiceResponse.new(start_conference)
+    render xml: response.xml
   end
 
   def dial
@@ -28,44 +24,33 @@ class CallsController < ApplicationController
     @call = @@client.calls.create(
       url: @@url + "/calls/answered",
       to: @@dial_number,
-      from: @@user_number
-    )
-    response = Twilio::TwiML::VoiceResponse.new do |response|
-      response.say(message: 'Forwarding your call now to' + @@dial_number)
-      response.say(message: 'If you would like us to wait for you. Please press star 0 0')
-      response.dial(hangupOnStar: 'true') do |d|
-        d.conference('conference', muted:'False', beep:'False', statusCallbackEvent: 'join leave', statusCallback: '/calls/conference', statusCallbackMethod: 'POST')
-        end
-        response.redirect('/calls/check_wait_or_exit')
-    end
-    render xml: response.to_s
+      from: @@user_number)
+    forward_call = ForwardCall.new(@@dial_number)
+    response = VoiceResponse.new(forward_call)
+    render xml: response.xml
   end
 
   def answered
     @@business_callSid = params['CallSid']
     logger.debug 'business callsid ' + @@business_callSid
-    response = Twilio::TwiML::VoiceResponse.new do |response|
-      response.say(message: 'you answered the call')
-      response.dial do |d|
-        d.conference('conference', muted:'False', beep:'False', statusCallbackEvent: 'join leave', statusCallback: '/calls/conference', statusCallbackMethod: 'POST')
-        end
-    end
-    render xml: response.to_s
+    answered_msg = Answered.new
+    response = VoiceResponse.new(answered_msg)
+    render xml: response.xml
   end
 
   def conference
-    event = params["StatusCallbackEvent"]
-    if event == "participant-leave" and params['CallSid'] == @@user_callSid
+    @event = params["StatusCallbackEvent"]
+    if @event == "participant-leave" and params['CallSid'] == @@user_callSid
       logger.debug 'conference sid: ' + @@conference_Sid
       logger.debug 'user left conference'
     end
 
-    if event == "participant-leave" and params['CallSid'] == @@business_callSid
-      logger.debug 'business left conference'
+    if @event == "participant-leave" and params['CallSid'] == @@business_callSid
+      logger.debug 'end the whole thing, the business hung up'
       hangup_user
     end
 
-    if event == "participant-join"
+    if @event == "participant-join"
       logger.debug 'someone is joining the conference'
       if params["CallSid"] == @@user_callSid
         logger.debug 'user is joining the conference'
@@ -95,29 +80,21 @@ class CallsController < ApplicationController
   end
 
   def connect
-    response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.say(message: 'We are connecting you with the business')
-    end
-    render xml: response.to_s
+    announce = Announcement.new
+    response = VoiceResponse.new(announce)
+    render xml: response.xml
   end
 
   def confirm_wait
-    user_input = params['Digits']
-    response = Twilio::TwiML::VoiceResponse.new do |response|
-      if user_input == '00'
-        @@wait_for_me = true
-        response.say(message: 'We will call you back when a business agent is on the line')
-        response.redirect('/calls/hangup', method: 'POST')
-      else
-        response.redirect('/calls/rejoin_conference', method: 'POST')
-      end
-    end
-    render xml: response.to_s
+    input = params['Digits']
+    confirm_wait = ConfirmWait.new(input)
+    response = VoiceResponse.new(confirm_wait)
+    render xml: response.xml
   end
 
   def hangup
     response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.hangup
+      response.hangup
     end
     wait_for_me
     render xml: response.to_s
@@ -125,17 +102,12 @@ class CallsController < ApplicationController
 
   def rejoin_conference
     @@user_callSid = params['CallSid']
-    response = Twilio::TwiML::VoiceResponse.new do |response|
-      response.dial(hangupOnStar: 'true') do |d|
-        d.conference('conference', muted: 'False', beep:'False', statusCallbackEvent: 'join leave', statusCallback: '/calls/conference', statusCallbackMethod: 'POST')
-        end
-      response.redirect('/calls/check_wait_or_exit')
-    end
-    render xml: response.to_s
+    rejoin_conference = RejoinConference.new
+    response = VoiceResponse.new(rejoin_conference)
+    render xml: response.xml
   end
 
   def check_wait_or_exit
-    #call = @@client.calls(@@user_callSid).fetch
     if params['CallStatus'] == 'completed'
       logger.debug 'user call completed, hang up business'
         hangup_business
@@ -171,10 +143,11 @@ class CallsController < ApplicationController
     end
   end
 
+
   private
   def boot_twilio
     account_sid = ''
     auth_token = ''
-  	@@client = Twilio::REST::Client.new(account_sid, auth_token)
+    @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 end
