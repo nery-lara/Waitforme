@@ -1,7 +1,7 @@
 class RejoinConference
 
 	def redirect
-		'/calls/rejoinconference'
+		'/calls/check_wait_or_exit'
 	end
 
 	def hangupOnStar
@@ -9,7 +9,7 @@ class RejoinConference
     end
 
     def action
-    	'/calls/confirmwait'
+    	'/calls/confirm_wait'
     end
 
     def request_method

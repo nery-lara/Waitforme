@@ -1,7 +1,7 @@
 class Announcement
 
 	def msg
-		'This is an announcement'
+		'We are connecting you with the business'
 	end
-	
+
 end

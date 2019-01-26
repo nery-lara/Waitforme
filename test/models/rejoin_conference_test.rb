@@ -3,7 +3,7 @@ require 'test_helper'
 class RejoinConferenceTest < ActiveSupport::TestCase
   test 'Redirect' do
     rejoin = RejoinConference.new
-    assert_equal '/calls/rejoinconference', rejoin.redirect
+    assert_equal '/calls/check_wait_or_exit', rejoin.redirect
   end
 
   test 'HangupOnStar' do
@@ -13,7 +13,7 @@ class RejoinConferenceTest < ActiveSupport::TestCase
 
   test 'Action' do
     rejoin = RejoinConference.new
-    assert_equal '/calls/confirmwait', rejoin.action
+    assert_equal '/calls/confirm_wait', rejoin.action
   end
 
   test 'Request_method' do

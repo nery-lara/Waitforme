@@ -5,14 +5,14 @@ class CallsController < ApplicationController
   @@user_callSid = ""
   @@business_callSid = ""
   @@waitforme = false
-  @@url = 'http://27831803.ngrok.io'
+  @@url = 'http://25a3a11c.ngrok.io'
   Rails.logger = Logger.new(STDOUT)
 
   def start
     logger.debug 'inside start'
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
-    logger 'user callsid ' + @@user_callSid
+    logger.debug 'user callsid ' + @@user_callSid
     start_conference = StartConference.new
     response = VoiceResponse.new(start_conference)
     render xml: response.xml
@@ -22,7 +22,7 @@ class CallsController < ApplicationController
     boot_twilio
     @@dial_number = params['Digits']
     @call = @@client.calls.create(
-      url: "https://8ac58911.ngrok.io/calls/answered",
+      url: @@url + "/calls/answered",
       to: @@dial_number,
       from: @@user_number)
     forward_call = ForwardCall.new(@@dial_number)
@@ -39,7 +39,6 @@ class CallsController < ApplicationController
   end
 
   def conference
-    logger.debug 'user left conference'
     @event = params["StatusCallbackEvent"]
     if @event == "participant-leave" and params['CallSid'] == @@user_callSid
       logger.debug 'conference sid: ' + @@conference_Sid
@@ -73,7 +72,7 @@ class CallsController < ApplicationController
     #detect when off hold
     #call user back
     call = @@client.calls.create(
-      url: @@url + "/calls/rejoinconference",
+      url: @@url + "/calls/rejoin_conference",
       from: @@dial_number,
       to: @@user_number
     )
@@ -83,11 +82,11 @@ class CallsController < ApplicationController
   def connect
     announce = Announcement.new
     response = VoiceResponse.new(announce)
-    response.xml
+    render xml: response.xml
   end
 
   def confirm_wait
-    input = params['Digits'].join
+    input = params['Digits']
     confirm_wait = ConfirmWait.new(input)
     response = VoiceResponse.new(confirm_wait)
     render xml: response.xml
@@ -101,7 +100,7 @@ class CallsController < ApplicationController
     render xml: response.to_s
   end
 
-  def rejoinconference
+  def rejoin_conference
     @@user_callSid = params['CallSid']
     rejoin_conference = RejoinConference.new
     response = VoiceResponse.new(rejoin_conference)
@@ -109,7 +108,6 @@ class CallsController < ApplicationController
   end
 
   def check_wait_or_exit
-    #call = @@client.calls(@@user_callSid).fetch
     if params['CallStatus'] == 'completed'
       logger.debug 'user call completed, hang up business'
         hangup_business
@@ -153,8 +151,3 @@ class CallsController < ApplicationController
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 end
-
-
-#user calls
-#ask for number to call
-#create call from

@@ -23,6 +23,6 @@ class ConfirmWaitTest < ActiveSupport::TestCase
 
   test 'Endpoint2' do
     confirm = ConfirmWait.new('3')
-    assert_equal '/calls/rejoinconference', confirm.endpoint2
+    assert_equal '/calls/rejoin_conference', confirm.endpoint2
   end
 end

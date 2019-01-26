@@ -5,7 +5,7 @@ class VoiceResponse
 
         case @call
         when StartConference
-            @response = Twilio::TwiML::VoiceResponse.new do |response| 
+            @response = Twilio::TwiML::VoiceResponse.new do |response|
                 response.say(message: @call.message)
                 response.gather(numDigits: @call.numdigits,
                                 action: @call.endpoint,
@@ -18,15 +18,13 @@ class VoiceResponse
                 response.say(message: @call.message_2)
                 response.dial(hangupOnStar: @call.hangupOnStar) do |dial_business|
                    dial_business.conference('conference', muted:@con_call.muted, beep:@con_call.beep,
-                                       statusCallbackEvent:@con_call.statusCallbackEvent, 
+                                       statusCallbackEvent:@con_call.statusCallbackEvent,
                                        statusCallback:@con_call.statusCallback,
                                        statusCallbackMethod:@con_call.statusCallbackMethod)
                  end
                    response.gather(action: @call.action, method: @call.request_method, numdigits: @call.numdigits)
-                   response.redirect('/calls/rejoinconference')
+                   response.redirect('/calls/check_wait_or_exit')
                 end
-            end
-
 
         when ConfirmWait
             @response = Twilio::TwiML::VoiceResponse.new do |response|
@@ -43,7 +41,7 @@ class VoiceResponse
               response.say(message: @call.msg)
               response.dial(hangupOnStar: @call.hangupOnStar) do |dial_back|
                  dial_back.conference('conference', muted:@con_call.muted, beep:@con_call.beep,
-                                      statusCallbackEvent:@con_call.statusCallbackEvent, 
+                                      statusCallbackEvent:@con_call.statusCallbackEvent,
                                       statusCallback:@con_call.statusCallback,
                                       statusCallbackMethod:@con_call.statusCallbackMethod)
               end
@@ -58,7 +56,7 @@ class VoiceResponse
             @response = Twilio::TwiML::VoiceResponse.new do |response|
                 response.dial(hangupOnStar: @call.hangupOnStar) do |redirect|
                     redirect.conference('conference', muted:@con_call.muted, beep:@con_call.beep,
-                                        statusCallbackEvent:@con_call.statusCallbackEvent, 
+                                        statusCallbackEvent:@con_call.statusCallbackEvent,
                                         statusCallback:@con_call.statusCallback,
                                         statusCallbackMethod:@con_call.statusCallbackMethod)
                   end
@@ -70,7 +68,7 @@ class VoiceResponse
         end
     end
 
-    def xml 
+    def xml
         @response.to_s
     end
 end

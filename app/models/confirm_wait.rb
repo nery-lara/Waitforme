@@ -18,6 +18,6 @@ class ConfirmWait
 	end
 
 	def endpoint2
-		'/calls/rejoinconference'
+		'/calls/rejoin_conference'
 	end
 end

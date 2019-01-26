@@ -3,8 +3,8 @@ class ForwardCall
 
     def initialize(number)
         @number = number
-    end 
-    
+    end
+
     def message_1
         'Forwarding your call now to' + number
     end
@@ -18,7 +18,7 @@ class ForwardCall
     end
 
     def action
-    	'/calls/confirmwait'
+    	'/calls/confirm_wait'
     end
 
     def request_method
@@ -29,5 +29,5 @@ class ForwardCall
     	2
     end
 
-    
+
 end

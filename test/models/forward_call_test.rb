@@ -23,7 +23,7 @@ class ForwardCallTest < ActiveSupport::TestCase
 
   test 'Action' do
     forward = ForwardCall.new('3')
-    assert_equal '/calls/confirmwait', forward.action
+    assert_equal '/calls/confirm_wait', forward.action
   end
 
   test 'Request_method' do
