@@ -20,7 +20,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'twilio-ruby'
 
 gem 'redis'
-
+gem 'redis-rails'
 gem 'redis-namespace'
 
 # Use CoffeeScript for .coffee assets and views
