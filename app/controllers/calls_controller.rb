@@ -5,7 +5,7 @@ class CallsController < ApplicationController
   @@user_callSid = ""
   @@business_callSid = ""
   @@waitforme = false
-  @@url = ''
+  @@url = 'http://cefb3c7f.ngrok.io'
   Rails.logger = Logger.new(STDOUT)
 
   def start
@@ -72,13 +72,10 @@ class CallsController < ApplicationController
     #detect when off hold
     @@client.conferences(@@conference_Sid).update(status: 'completed')
 
-    #call user back
-    call = @@client.calls.create(
-      url: @@url + "/calls/rejoin_conference",
-      from: @@dial_number,
-      to: @@user_number
-    )
-    #join conference
+  end
+
+  def call_user_back
+    call = @@client.calls.create(url: @@url + "/calls/rejoin_conference", from: @@dial_number, to: @@user_number)
   end
 
   def connect
@@ -131,6 +128,19 @@ class CallsController < ApplicationController
     @@client.calls(@@user_callSid).update(status: 'completed')
   end
 
+  def wait_for_business
+    wait_for_business = WaitForBusiness.new
+    response = VoiceResponse.new(wait_for_business)
+    render xml: response.xml
+  end
+
+  def business_rejoin_conference
+    business_rejoin_conference = BusinessRejoinConference.new
+    response = VoiceResponse.new(business_rejoin_conference)
+    call_user_back
+    render xml: response.xml
+  end
+
   def status_change
     #status changes only for user, not the business
     callsid = params['CallSid']
@@ -148,8 +158,8 @@ class CallsController < ApplicationController
 
   private
   def boot_twilio
-    account_sid = ''
-    auth_token = ''
+    account_sid = 'AC14a0fc7958eb5a457b937744ac590ac4'
+    auth_token = '1ac75e253415d780d1a29466adfaee02'
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 end
