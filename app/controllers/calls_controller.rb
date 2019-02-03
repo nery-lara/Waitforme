@@ -5,7 +5,7 @@ class CallsController < ApplicationController
   @@user_callSid = ""
   @@business_callSid = ""
   @@waitforme = false
-  @@url = 'http://25a3a11c.ngrok.io'
+  @@url = ''
   Rails.logger = Logger.new(STDOUT)
 
   def start
@@ -70,6 +70,8 @@ class CallsController < ApplicationController
 
   def wait_for_me
     #detect when off hold
+    @@client.conferences(@@conference_Sid).update(status: 'completed')
+
     #call user back
     call = @@client.calls.create(
       url: @@url + "/calls/rejoin_conference",
