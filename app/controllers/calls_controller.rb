@@ -8,14 +8,9 @@ class CallsController < ApplicationController
   @@url = ""
   Rails.logger = Logger.new(STDOUT)
 
-  def test
-    @@url = request.base_url
-    puts(@@url)
-  end
-
   def start
     logger.debug 'inside start'
-    logger.debug @@url
+    @@url = request.base_url
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
     logger.debug 'user callsid ' + @@user_callSid
