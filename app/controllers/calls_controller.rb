@@ -5,11 +5,17 @@ class CallsController < ApplicationController
   @@user_callSid = ""
   @@business_callSid = ""
   @@waitforme = false
-  @@url = 'http://25a3a11c.ngrok.io'
+  @@url = ""
   Rails.logger = Logger.new(STDOUT)
+
+  def test
+    @@url = request.base_url
+    puts(@@url)
+  end
 
   def start
     logger.debug 'inside start'
+    logger.debug @@url
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
     logger.debug 'user callsid ' + @@user_callSid
@@ -146,8 +152,8 @@ class CallsController < ApplicationController
 
   private
   def boot_twilio
-    account_sid = ''
-    auth_token = ''
+    account_sid = ENV['ACCOUNT_SID']
+    auth_token = ENV['AUTH_TOKEN']
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 end
