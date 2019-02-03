@@ -15,4 +15,5 @@ class StartConference
 	def numdigits
 		10
 	end
+
 end

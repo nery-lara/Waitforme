@@ -7,4 +7,5 @@ class Answered
 	end
 
 	attr_reader :msg, :hangupOnStar, :wait_for_business
+
 end

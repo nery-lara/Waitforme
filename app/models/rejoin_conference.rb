@@ -5,18 +5,19 @@ class RejoinConference
 	end
 
 	def hangupOnStar
-    	'true'
-    end
+		'true'
+	end
 
-    def action
-    	'/calls/confirm_wait'
-    end
+	def action
+		'/calls/confirm_wait'
+	end
 
-    def request_method
-    	'POST'
-    end
+	def request_method
+		'POST'
+	end
 
-    def numdigits
-    	2
-    end
+	def numdigits
+		2
+	end
+
 end
