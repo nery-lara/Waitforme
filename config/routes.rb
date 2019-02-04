@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  #mount Alexa::Engine, at: "/alexa"
+  post 'alexa/create'
   post 'calls/start'
   post 'calls/dial'
   post 'calls/answered'
