@@ -1,33 +1,33 @@
 class ForwardCall
-    attr_reader :number
 
-    def initialize(number)
-        @number = number
-    end
+  attr_reader :number
 
-    def message_1
-        'Forwarding your call now to' + number
-    end
+  def initialize(number)
+    @number = number
+  end
 
-    def message_2
-    	'If you would like us to wait for you. Please press star 0 0'
-    end
+  def message_1
+    'Forwarding your call now to' + number
+  end
 
-    def hangupOnStar
-    	'true'
-    end
+  def message_2
+    'If you would like us to wait for you. Please press star 0 0'
+  end
 
-    def action
-    	'/calls/confirm_wait'
-    end
+  def hangupOnStar
+    'true'
+  end
 
-    def request_method
-    	'POST'
-    end
+  def action
+    '/calls/confirm_wait'
+  end
 
-    def numdigits
-    	2
-    end
+  def request_method
+    'POST'
+  end
 
+  def numdigits
+    2
+  end
 
 end

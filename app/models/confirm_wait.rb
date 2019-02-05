@@ -1,4 +1,5 @@
 class ConfirmWait
+
 	attr_reader :input
 
 	def initialize(input)
@@ -20,4 +21,5 @@ class ConfirmWait
 	def endpoint2
 		'/calls/rejoin_conference'
 	end
+	
 end
