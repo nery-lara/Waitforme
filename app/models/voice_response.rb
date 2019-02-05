@@ -21,7 +21,7 @@ class VoiceResponse
 
     when WaitForBusiness
       @response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.gather(input: @call.speech, action: @call.business_rejoin_conference, method: @call.post)
+        response.gather(input: @call.speech, action: @call.business_rejoin_conference, method: @call.post, speechTimeout: @call.speech_timeout)
         response.redirect(@call.wait_for_business)
       end
 
