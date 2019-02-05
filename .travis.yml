@@ -1,3 +1,12 @@
 language: ruby
 rvm:
-  - 2.5.3
+- 2.5.3
+deploy:
+  provider: gae
+  skip_cleanup: true
+  keyfile: gae-deploy-key.json
+  project: WaitForMe
+  on: GoogleAppEngine
+before_install:
+- openssl aes-256-cbc -K $encrypted_fa41e1cb5ac6_key -iv $encrypted_fa41e1cb5ac6_iv
+  -in gae-deploy-key.json.enc -out gae-deploy-key.json -d

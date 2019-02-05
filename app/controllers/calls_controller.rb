@@ -20,6 +20,7 @@ class CallsController < ApplicationController
   end
 
   def dial
+    logger.debug 'inside dial'
     boot_twilio
     @@dial_number = params['Digits']
     @call = @@client.calls.create(
@@ -149,6 +150,8 @@ class CallsController < ApplicationController
   def boot_twilio
     account_sid = ENV['ACCOUNT_SID']
     auth_token = ENV['AUTH_TOKEN']
+    logger.debug account_sid
+    logger.debug auth_token
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 end
