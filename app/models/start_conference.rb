@@ -1,4 +1,8 @@
 class StartConference
+	attr_reader :number
+
+	def initializer(input)
+		@number = input
 
 	def message
 		'Please enter the number you wish to call'
@@ -12,7 +16,7 @@ class StartConference
 		'POST'
 	end
 
-	def numdigits
-		10
-	end
+	# def numdigits
+	# 	10
+	# end
 end

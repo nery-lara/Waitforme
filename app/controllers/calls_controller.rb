@@ -8,12 +8,12 @@ class CallsController < ApplicationController
   @@url = 'http://25a3a11c.ngrok.io'
   Rails.logger = Logger.new(STDOUT)
 
-  def start
+  def start(phone_number)
     logger.debug 'inside start'
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
     logger.debug 'user callsid ' + @@user_callSid
-    start_conference = StartConference.new
+    start_conference = StartConference.new(phone_number)
     response = VoiceResponse.new(start_conference)
     render xml: response.xml
   end
