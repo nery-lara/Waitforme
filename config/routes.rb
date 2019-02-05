@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  post 'alexa/create'
   post 'calls/start'
   post 'calls/dial'
   post 'calls/answered'
