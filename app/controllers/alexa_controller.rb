@@ -13,6 +13,7 @@ class AlexaController < ApplicationController
     when "INTENT_REQUEST"
       business_name = input.slots['business']['value']
       puts business_name
+      call_business(business_name)
       message = "calling #{business_name} now"
       # start(response)
     when "SESSION_ENDED_REQUEST"
@@ -54,13 +55,18 @@ class AlexaController < ApplicationController
   #   # response = VoiceResponse.new(forward_call)
   #   # render xml: response.xml
   # end
-
-
-  private
-  def boot_twilio
-    account_sid = ''
-    auth_token = ''
-    @url = ''
-    @client = Twilio::REST::Client.new(account_sid, auth_token)
+  def call_business(business_name)
+    case business_name
+    when "sitao"
+      start("")#phone_number
+    when "yuhao"
+      start("")#phone_number
+    end
   end
+
+  def start(phone_number)
+    call_object = CallsController.new
+    call_object.dial_business(phone_number)
+  end
+
 end

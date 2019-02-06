@@ -4,38 +4,12 @@ class VoiceResponse
     @call = call
     @con_call = ConferenceCall.new
 
-<<<<<<< HEAD
-        # when ForwardCall
-        #     @response = Twilio::TwiML::VoiceResponse.new do |response|
-        #         response.say(message: @call.message_1)
-        #         response.say(message: @call.message_2)
-        #         response.dial(hangupOnStar: @call.hangupOnStar) do |dial_business|
-        #            dial_business.conference('conference', muted:@con_call.muted, beep:@con_call.beep,
-        #                                statusCallbackEvent:@con_call.statusCallbackEvent,
-        #                                statusCallback:@con_call.statusCallback,
-        #                                statusCallbackMethod:@con_call.statusCallbackMethod)
-        #          end
-        #            response.gather(action: @call.action, method: @call.request_method, numdigits: @call.numdigits)
-        #            response.redirect('/calls/check_wait_or_exit')
-        #         end
-
-        when ForwardCall
-          @response = Twilio::TwiML::VoiceResponse.new do |response|
-            response.dial do |dial_business|
-              dial_business.conference('conference', muted:@con_call.muted, beep:@con_call.beep,
-                statusCallbackEvent:@con_call.statusCallbackEvent,
-                statusCallback:@con_call.statusCallback,
-                statusCallbackMethod:@con_call.statusCallbackMethod)
-              end
-            end
-=======
     case @call
     when StartConference
       @response = Twilio::TwiML::VoiceResponse.new do |response|
         response.say(message: @call.message)
         response.gather(numDigits: @call.numdigits, action: @call.endpoint, method: @call.request_method)
       end
->>>>>>> 8b786608a195d3524594a35eb47fdfc11d1b9a93
 
     when BusinessRejoinConference
       @response = Twilio::TwiML::VoiceResponse.new do |response|
