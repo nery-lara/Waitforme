@@ -1,22 +1,23 @@
 class ConferenceCall
 
 	def muted
-    	'False'
-    end
+		'False'
+	end
 
-    def beep
-    	'False'
-    end
+	def beep
+		'False'
+	end
 
-    def statusCallbackEvent
-    	'join leave'
-    end
+	def statusCallbackEvent
+		'join leave'
+	end
 
-    def statusCallback
-    	'/calls/conference'
-    end
+	def statusCallback
+		'/calls/conference'
+	end
 
-    def statusCallbackMethod
-    	'POST'
-    end
+	def statusCallbackMethod
+		'POST'
+	end
+
 end
