@@ -1,5 +1,5 @@
 module ApplicationHelper
-
+  include CacheHelper
   def fetch_session(key)
     session_json = cache_get(key)
     session_parsed = JSON.parse(session_json)
@@ -8,6 +8,7 @@ module ApplicationHelper
     session.user.sid = session_parsed['user']['sid']
     session.business.number = session_parsed['business']['number']
     session.business.sid = session_parsed['business']['sid']
+    session.conference.sid = session_parsed['conference']['sid']
     session
   end
 
