@@ -1,8 +1,9 @@
 class ConfirmWait
 	attr_reader :input
 
-	def initialize(input)
+	def initialize(input, user_endpoint)
 		@input = input
+		@user_endpoint = user_endpoint
 	end
 
 	def message3
@@ -10,7 +11,7 @@ class ConfirmWait
 	end
 
 	def endpoint1
-		'/calls/hangup'
+		'/calls/hangup/' + @user_endpoint
 	end
 
 	def request
@@ -18,6 +19,6 @@ class ConfirmWait
 	end
 
 	def endpoint2
-		'/calls/rejoin_conference'
+		'/calls/rejoin_conference/' + @user_endpoint
 	end
 end
