@@ -23,6 +23,6 @@ class RejoinConferenceTest < ActiveSupport::TestCase
 
   test 'Numdigits' do
     rejoin = RejoinConference.new
-    assert_equal 2, rejoin.numdigits
+    assert_equal 1, rejoin.numdigits
   end
 end

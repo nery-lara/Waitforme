@@ -30,4 +30,8 @@ class ForwardCall
     1
   end
 
+  def timeout
+    1
+  end
+
 end
