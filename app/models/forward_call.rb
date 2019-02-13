@@ -27,7 +27,7 @@ class ForwardCall
   end
 
   def numdigits
-    2
+    1
   end
 
 end

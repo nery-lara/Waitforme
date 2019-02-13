@@ -113,7 +113,7 @@ class CallsController < ApplicationController
     else
       logger.debug 'user call not completed'
       response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.gather(action: '/calls/confirm_wait', method: 'POST', numdigits: 2)
+        response.gather(action: '/calls/confirm_wait', method: 'POST', numdigits: 1)
         response.redirect('/calls/rejoin_conference')
       end
       render xml: response.to_s
@@ -161,5 +161,5 @@ class CallsController < ApplicationController
     auth_token = ''
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
-  
+
 end

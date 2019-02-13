@@ -38,7 +38,7 @@ class VoiceResponse
 
     when ConfirmWait
       @response = Twilio::TwiML::VoiceResponse.new do |response|
-        if @call.input == '00'
+        if @call.input == '0'
           response.say(message: @call.message3)
           response.redirect(@call.endpoint1, method:@call.request)
         else
