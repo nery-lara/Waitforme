@@ -6,28 +6,29 @@ module ApplicationHelper
     username = 'user' + cache_get('user_count')
   end
 
-  def add_user_key(user, value)
-    cache_set_add(user, value)
-  end
-  def get_user_key(value)
-    #look for value in cache_set
-    #
-  end
   def fetch_session(key)
-    session_json = cache_get(key)
-    session_parsed = JSON.parse(session_json)
-    session = Session.new
-    session.user.number = session_parsed['user']['number']
-    session.user.sid = session_parsed['user']['sid']
-    session.user.name = session_parsed['user']['name']
-    session.business.number = session_parsed['business']['number']
-    session.business.sid = session_parsed['business']['sid']
-    session.conference.sid = session_parsed['conference']['sid']
-    session.conference.name = session_parsed['conference']['name']
-    session
+    serialized_session = cache_get(key)
+    YAML::load(serialized_session)
   end
 
   def store_session(key, session)
-    cache_set(key, session.to_json)
+    cache_set(key, YAML::dump(session)))
+  end
+
+  def fetch_client
+    serialized_client = cache_get('client')
+    YAML::load(serialized_client)
+  end
+
+  def store_client(client)
+    cache_set('client', YAML::dump(client))
+  end
+
+  def fetch_url
+    cache_get('url')
+  end
+
+  def store_url(url)
+    cache_set('url', url)
   end
 end

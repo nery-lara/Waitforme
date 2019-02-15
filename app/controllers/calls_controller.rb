@@ -1,7 +1,7 @@
 class CallsController < ApplicationController
   include ApplicationHelper
   skip_before_action :verify_authenticity_token
-  @@url = 'http://f784f662.ngrok.io'
+  store_url('http://f784f662.ngrok.io')
   Rails.logger = Logger.new(STDOUT)
 
   def start
@@ -26,8 +26,9 @@ class CallsController < ApplicationController
     session = fetch_session(params[:user])
     session.business.number = params['Digits']
     logger.debug 'dial name' + session.user.name
-    call = @@client.calls.create(
-      url: @@url + "/calls/answered" + '/' + session.user.name,
+    client = fetch_client
+    call = client.calls.create(
+      url: fetch_url + "/calls/answered" + '/' + session.user.name,
       to: session.business.number,
       from: session.user.number)
     forward_call = ForwardCall.new(session.business.number, session.user.name)
@@ -49,27 +50,28 @@ class CallsController < ApplicationController
 
   def conference
     session = fetch_session(params[:user])
-    @event = params["StatusCallbackEvent"]
-    if @event == "participant-leave" and params['CallSid'] == session.user.sid
+    client = fetch_client
+    event = params["StatusCallbackEvent"]
+    if event == "participant-leave" and params['CallSid'] == session.user.sid
       logger.debug 'conference sid: ' + session.conference.sid
       logger.debug 'user left conference'
     end
 
-    if @event == "participant-leave" and params['CallSid'] == session.business.sid
+    if event == "participant-leave" and params['CallSid'] == session.business.sid
       logger.debug 'end the whole thing, the business hung up'
       hangup_user(session)
     end
 
-    if @event == "participant-join"
+    if event == "participant-join"
       logger.debug 'someone is joining the conference'
       if params["CallSid"] == session.user.sid
         logger.debug 'user is joining the conference'
         logger.debug 'their callsid is ' + params['CallSid']
         session.conference.sid = params['ConferenceSid']
         logger.debug 'conference Sid is:' + session.conference.sid
-        user = @@client.conferences(session.conference.sid).fetch
+        user = client.conferences(session.conference.sid).fetch
         logger.debug 'here' + user.friendly_name
-        announce = @@client.conferences(session.conference.sid).participants(session.user.sid).update(announce_url: @@url + "/calls/connect" + '/' + session.user.name)
+        announce = client.conferences(session.conference.sid).participants(session.user.sid).update(announce_url: fetch_url + "/calls/connect" + '/' + session.user.name)
       end
       if params["CallSid"] == session.business.sid
         logger.debug 'business is joining the conference'
@@ -83,8 +85,9 @@ class CallsController < ApplicationController
     session = fetch_session(params[:user])
     #detect when off hold
     #call user back
-    call = @@client.calls.create(
-      url: @@url + "/calls/rejoin_conference/" + session.user.name,
+    client = fetch_client
+    call = client.calls.create(
+      url: fetch_url + "/calls/rejoin_conference/" + session.user.name,
       from: session.business.number,
       to: session.user.number
     )
@@ -140,11 +143,13 @@ class CallsController < ApplicationController
   end
 
   def hangup_business(session)
-    @@client.calls(session.business.sid).update(status: 'completed')
+    client = fetch_client
+    client.calls(session.business.sid).update(status: 'completed')
   end
 
   def hangup_user(session)
-    @@client.calls(session.user.sid).update(status: 'completed')
+    client = fetch_client
+    client.calls(session.user.sid).update(status: 'completed')
   end
 
   def status_change
@@ -163,6 +168,7 @@ class CallsController < ApplicationController
   def boot_twilio
     account_sid = 'AC14a0fc7958eb5a457b937744ac590ac4'
     auth_token = '1ac75e253415d780d1a29466adfaee02'
-    @@client = Twilio::REST::Client.new(account_sid, auth_token)
+    client = Twilio::REST::Client.new(account_sid, auth_token)
+    store_client(client)
   end
 end
