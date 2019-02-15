@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   post 'calls/start'
   post 'calls/dial'
   post 'calls/answered'
@@ -13,5 +14,9 @@ Rails.application.routes.draw do
   post 'calls/wait_for_me'
   post 'calls/wait_for_business'
   post 'calls/business_rejoin_conference'
+  post 'ivr/welcome'
+  post 'ivr/main_menu'
+  post 'ivr/options'
+  post 'ivr/call_business_rep'
 
 end
