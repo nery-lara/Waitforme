@@ -8,15 +8,16 @@ class CallsController < ApplicationController
   @@business_callSid = ""
   @@waitforme = false
   @@url = ''
+  @@twilio_number = ""
 
   Rails.logger = Logger.new(STDOUT)
 
-  def start
+  def start(phone_number)
     logger.debug 'inside start'
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
     logger.debug 'user callsid ' + @@user_callSid
-    start_conference = StartConference.new
+    start_conference = StartConference.new(phone_number)
     response = VoiceResponse.new(start_conference)
     render xml: response.xml
   end
@@ -28,6 +29,14 @@ class CallsController < ApplicationController
     forward_call = ForwardCall.new(@@dial_number)
     response = VoiceResponse.new(forward_call)
     render xml: response.xml
+  end
+
+  def dial_business(input)
+    boot_twilio
+    @@dial_number = input
+    @call = @@client.calls.create(
+            url: @@url + "/calls/wait_for_business",
+            to: @@dial_number, from: @@twilio_number)
   end
 
   def answered
@@ -161,5 +170,5 @@ class CallsController < ApplicationController
     auth_token = ''
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
-  
+
 end
