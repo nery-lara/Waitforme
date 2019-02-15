@@ -5,13 +5,10 @@ class CallsController < ApplicationController
   Rails.logger = Logger.new(STDOUT)
 
   def start
-    session = Session.new
-    session.user.name = create_username
-    session.conference.name = 'conference_' + session.user.name
+    session = create_user
     logger.debug 'user endpoint is ' + session.user.name
     session.user.number = params['From']
     logger.debug 'session number' + session.user.number
-    logger.debug 'inside start'
     session.user.sid = params['CallSid']
     logger.debug 'user callsid ' + session.user.sid
     start_conference = StartConference.new(session.user.name)
@@ -70,7 +67,7 @@ class CallsController < ApplicationController
         session.conference.sid = params['ConferenceSid']
         logger.debug 'conference Sid is:' + session.conference.sid
         user = client.conferences(session.conference.sid).fetch
-        logger.debug 'here' + user.friendly_name
+        logger.debug 'Conference name is: ' + user.friendly_name
         announce = client.conferences(session.conference.sid).participants(session.user.sid).update(announce_url: fetch_url + "/calls/connect" + '/' + session.user.name)
       end
       if params["CallSid"] == session.business.sid
@@ -83,8 +80,6 @@ class CallsController < ApplicationController
 
   def wait_for_me
     session = fetch_session(params[:user])
-    #detect when off hold
-    #call user back
     client = fetch_client
     call = client.calls.create(
       url: fetch_url + "/calls/rejoin_conference/" + session.user.name,
@@ -92,7 +87,6 @@ class CallsController < ApplicationController
       to: session.user.number
     )
     store_session(session.user.name, session)
-    #join conference
   end
 
   def connect
@@ -131,7 +125,7 @@ class CallsController < ApplicationController
     session = fetch_session(params[:user])
     if params['CallStatus'] == 'completed'
       logger.debug 'user call completed, hang up business'
-        hangup_business(session)
+      hangup_business(session)
     else
       logger.debug 'user call not completed'
       response = Twilio::TwiML::VoiceResponse.new do |response|
@@ -162,7 +156,6 @@ class CallsController < ApplicationController
       logger.debug 'user status is complete'
     end
   end
-
 
   private
   def boot_twilio

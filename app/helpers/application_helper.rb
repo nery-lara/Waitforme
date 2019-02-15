@@ -1,6 +1,12 @@
 module ApplicationHelper
   include CacheHelper
 
+  def create_user
+    session = Session.new
+    session.user.name = create_username
+    session.conference.name = 'conference_' + session.user.name
+  end
+
   def create_username
     cache_incr('user_count')
     username = 'user' + cache_get('user_count')
