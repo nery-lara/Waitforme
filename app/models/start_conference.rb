@@ -1,4 +1,9 @@
 class StartConference
+	attr_reader :number
+
+	def initializer(input)
+		@number = input
+	end
 
 	def initialize(user_endpoint)
 		@user_endpoint = user_endpoint

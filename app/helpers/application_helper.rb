@@ -37,4 +37,12 @@ module ApplicationHelper
   def store_url(url)
     cache_set('url', url)
   end
+
+  def fetch_twilio_number
+    cache_get('twilio_number')
+  end
+
+  def store_twilio_number(number)
+    cache_set('twilio_number', number)
+  end
 end

@@ -2,6 +2,7 @@ class CallsController < ApplicationController
   include ApplicationHelper
   skip_before_action :verify_authenticity_token
   store_url('http://f784f662.ngrok.io')
+  store_twilio_number('7775557777')
   Rails.logger = Logger.new(STDOUT)
 
   def start
@@ -32,6 +33,16 @@ class CallsController < ApplicationController
     response = VoiceResponse.new(forward_call, session)
     store_session(session.user.name, session)
     render xml: response.xml
+  end
+
+  def dial_business(input)
+    session = create_user
+    boot_twilio
+    client = fetch_client
+    session.business.number = input
+    client.calls.create(
+            url: fetch_url + "/calls/wait_for_business",
+            to: session.business.number, from: fetch_twilio_number)
   end
 
   def answered
