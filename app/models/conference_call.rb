@@ -5,27 +5,27 @@ class ConferenceCall
 	end
 
 	def muted
-    	'False'
-    end
+		'False'
+	end
 
-    def beep
-    	'False'
-    end
+	def beep
+		'False'
+	end
 
-    def statusCallbackEvent
-    	'join leave'
-    end
+	def statusCallbackEvent
+		'join leave'
+	end
 
-    def statusCallback
-    	'/calls/conference/' + @session.user.name
-    end
+  def statusCallback
+  	'/calls/conference/' + @session.user.name
+  end
 
-    def statusCallbackMethod
-    	'POST'
-    end
+  def statusCallbackMethod
+  	'POST'
+  end
 
-		def conf_name
-			#session.conference.name
-			'conference'
-		end
+	def conf_name
+		#session.conference.name
+		'conference'
+	end
 end

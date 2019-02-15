@@ -32,7 +32,6 @@ class CallsController < ApplicationController
     response = VoiceResponse.new(forward_call, session)
     store_session(session.user.name, session)
     render xml: response.xml
-
   end
 
   def answered
@@ -115,7 +114,7 @@ class CallsController < ApplicationController
   def rejoin_conference
     session = fetch_session(params[:user])
     session.user.sid = params['CallSid']
-    rejoin_conference = RejoinConference.new
+    rejoin_conference = RejoinConference.new(session.user.name)
     response = VoiceResponse.new(rejoin_conference, session)
     store_session(session.user.name, session)
     render xml: response.xml
@@ -146,6 +145,21 @@ class CallsController < ApplicationController
     client.calls(session.user.sid).update(status: 'completed')
   end
 
+  def wait_for_business
+    session = fetch_session(params[:user])
+    wait_for_business = WaitForBusiness.new( session.user.name)
+    response = VoiceResponse.new(wait_for_business, session)
+    render xml: response.xml
+  end
+
+  def business_rejoin_conference
+    session = fetch_session(params[:user])
+    business_rejoin_conference = BusinessRejoinConference.new
+    response = VoiceResponse.new(business_rejoin_conference, session)
+    call_user_back
+    render xml: response.xml
+  end
+
   def status_change
     #status changes only for user, not the business
     callsid = params['CallSid']
@@ -164,4 +178,5 @@ class CallsController < ApplicationController
     client = Twilio::REST::Client.new(account_sid, auth_token)
     store_client(client)
   end
+
 end

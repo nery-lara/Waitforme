@@ -10,5 +10,6 @@ Rails.application.routes.draw do
   post 'calls/connect/:user', to: 'calls#connect'
   post 'calls/status_change'
   post 'calls/check_wait_or_exit/:user', to: 'calls#check_wait_or_exit'
-
+  post 'calls/wait_for_business/:user', to: 'calls#wait_for_business'
+  post 'calls/business_rejoin_conference/:user', to: 'calls#business_rejoin_conference'
 end
