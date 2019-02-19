@@ -8,8 +8,7 @@ class CallsController < ApplicationController
   @@business_callSid = ""
   @@waitforme = false
   @@url = ""
-  
-  #Rails.logger = Logger.new('log/production.log')
+  Rails.logger = Logger.new(STDOUT)
 
   def start
     logger.debug 'inside start'
