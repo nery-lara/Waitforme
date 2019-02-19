@@ -3,5 +3,3 @@ env: flex
 runtime: ruby
 env_variables:
   RAILS_ENV: development
-  ACCOUNT_SID: <%= ENV["ACCOUNT_SID"] %>
-  AUTH_TOKEN: <%= ENV["AUTH_TOKEN"] %>

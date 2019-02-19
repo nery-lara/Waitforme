@@ -1,3 +1,5 @@
+require 'google/cloud/datastore'
+
 class CallsController < ApplicationController
   skip_before_action :verify_authenticity_token
   @@user_number = ""
@@ -6,7 +8,8 @@ class CallsController < ApplicationController
   @@business_callSid = ""
   @@waitforme = false
   @@url = ""
-  Rails.logger = Logger.new(STDOUT)
+  
+  #Rails.logger = Logger.new('log/production.log')
 
   def start
     logger.debug 'inside start'
@@ -147,8 +150,16 @@ class CallsController < ApplicationController
 
   private
   def boot_twilio
-    account_sid = ENV['ACCOUNT_SID']
-    auth_token = ENV['AUTH_TOKEN']
+    account_sid = ENV["ACCOUNT_SID"]
+    auth_token = ENV["AUTH_TOKEN"]
+    if (account_sid == nil || auth_token == nil) 
+      datastore = Google::Cloud::Datastore.new
+      task_key = datastore.key "Secrets", "TWILIO_KEYS"
+      entity = datastore.find task_key
+      account_sid = entity["ACCOUNT_SID"]
+      auth_token = entity["AUTH_TOKEN"]
+    end
+
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 end
