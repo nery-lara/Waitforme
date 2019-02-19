@@ -1,22 +1,25 @@
 require 'google/cloud/datastore'
 
 class CallsController < ApplicationController
+
   skip_before_action :verify_authenticity_token
+
   @@user_number = ""
   @@has_called = ""
   @@user_callSid = ""
   @@business_callSid = ""
   @@waitforme = false
   @@url = ""
+  @@twilio_number = ""
   Rails.logger = Logger.new(STDOUT)
 
-  def start
+  def start(phone_number)
     logger.debug 'inside start'
     @@url = request.base_url
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
     logger.debug 'user callsid ' + @@user_callSid
-    start_conference = StartConference.new
+    start_conference = StartConference.new(phone_number)
     response = VoiceResponse.new(start_conference)
     render xml: response.xml
   end
@@ -24,13 +27,18 @@ class CallsController < ApplicationController
   def dial
     boot_twilio
     @@dial_number = params['Digits']
-    @call = @@client.calls.create(
-      url: @@url + "/calls/answered",
-      to: @@dial_number,
-      from: @@user_number)
+    @call = @@client.calls.create(url: @@url + "/calls/answered", to: @@dial_number, from: @@user_number)
     forward_call = ForwardCall.new(@@dial_number)
     response = VoiceResponse.new(forward_call)
     render xml: response.xml
+  end
+
+  def dial_business(input)
+    boot_twilio
+    @@dial_number = input
+    @call = @@client.calls.create(
+            url: @@url + "/calls/wait_for_business",
+            to: @@dial_number, from: @@twilio_number)
   end
 
   def answered
@@ -64,6 +72,7 @@ class CallsController < ApplicationController
         logger.debug 'here' + user.friendly_name
         announce = @@client.conferences(@@conference_Sid).participants(@@user_callSid).update(announce_url: @@url + "/calls/connect")
       end
+
       if params["CallSid"] == @@business_callSid
         logger.debug 'business is joining the conference'
         logger.debug 'their callsid is ' + params['CallSid']
@@ -72,14 +81,11 @@ class CallsController < ApplicationController
   end
 
   def wait_for_me
-    #detect when off hold
-    #call user back
-    call = @@client.calls.create(
-      url: @@url + "/calls/rejoin_conference",
-      from: @@dial_number,
-      to: @@user_number
-    )
-    #join conference
+    @@client.conferences(@@conference_Sid).update(status: 'completed')
+  end
+
+  def call_user_back
+    call = @@client.calls.create(url: @@url + "/calls/rejoin_conference", from: @@dial_number, to: @@user_number)
   end
 
   def connect
@@ -113,7 +119,8 @@ class CallsController < ApplicationController
   def check_wait_or_exit
     if params['CallStatus'] == 'completed'
       logger.debug 'user call completed, hang up business'
-        hangup_business
+      hangup_business
+
     else
       logger.debug 'user call not completed'
       response = Twilio::TwiML::VoiceResponse.new do |response|
@@ -132,6 +139,19 @@ class CallsController < ApplicationController
     @@client.calls(@@user_callSid).update(status: 'completed')
   end
 
+  def wait_for_business
+    wait_for_business = WaitForBusiness.new
+    response = VoiceResponse.new(wait_for_business)
+    render xml: response.xml
+  end
+
+  def business_rejoin_conference
+    business_rejoin_conference = BusinessRejoinConference.new
+    response = VoiceResponse.new(business_rejoin_conference)
+    call_user_back
+    render xml: response.xml
+  end
+
   def status_change
     #status changes only for user, not the business
     callsid = params['CallSid']
@@ -145,7 +165,6 @@ class CallsController < ApplicationController
       end
     end
   end
-
 
   private
   def boot_twilio
@@ -161,4 +180,5 @@ class CallsController < ApplicationController
 
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
+
 end

@@ -19,7 +19,11 @@ gem 'uglifier', '>= 1.3.0'
 # Twilio library
 gem 'twilio-ruby'
 
+# Google Cloud
 gem 'google-cloud-datastore'
+
+# Alexa
+gem 'alexa_rubykit'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
