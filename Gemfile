@@ -24,6 +24,7 @@ gem 'google-cloud-datastore'
 
 # Alexa
 gem 'alexa_rubykit'
+gem 'alexa_verifier'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'

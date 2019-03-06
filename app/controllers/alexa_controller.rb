@@ -57,10 +57,8 @@ class AlexaController < ApplicationController
   # end
   def call_business(business_name)
     case business_name
-    when "sitao"
-      start("")#phone_number
     when "yuhao"
-      start("")#phone_number
+      start("+18052801861")#phone_number
     end
   end
 

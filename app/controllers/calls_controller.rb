@@ -9,17 +9,17 @@ class CallsController < ApplicationController
   @@user_callSid = ""
   @@business_callSid = ""
   @@waitforme = false
-  @@url = ""
-  @@twilio_number = ""
+  @@url = "https://waitforme.appspot.com:80"
+  @@twilio_number = "8053078995"
   Rails.logger = Logger.new(STDOUT)
 
-  def start(phone_number)
+  def start
     logger.debug 'inside start'
-    @@url = request.base_url
+    #@@url = request.base_url
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
     logger.debug 'user callsid ' + @@user_callSid
-    start_conference = StartConference.new(phone_number)
+    start_conference = StartConference.new
     response = VoiceResponse.new(start_conference)
     render xml: response.xml
   end
@@ -124,7 +124,7 @@ class CallsController < ApplicationController
     else
       logger.debug 'user call not completed'
       response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.gather(action: '/calls/confirm_wait', method: 'POST', numdigits: 2)
+        response.gather(action: '/calls/confirm_wait', method: 'POST', numDigits: 2)
         response.redirect('/calls/rejoin_conference')
       end
       render xml: response.to_s
@@ -170,6 +170,7 @@ class CallsController < ApplicationController
   def boot_twilio
     account_sid = ENV["ACCOUNT_SID"]
     auth_token = ENV["AUTH_TOKEN"]
+    puts 'yo'
     if (account_sid == nil || auth_token == nil) 
       datastore = Google::Cloud::Datastore.new
       task_key = datastore.key "Secrets", "TWILIO_KEYS"
@@ -177,6 +178,7 @@ class CallsController < ApplicationController
       account_sid = entity["ACCOUNT_SID"]
       auth_token = entity["AUTH_TOKEN"]
     end
+    puts 'damn'
 
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
