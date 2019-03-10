@@ -27,9 +27,8 @@ class IvrResponse
 
     when IvrMainMenu
       @response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.gather(numDigits: @call.num_digits, action: @call.ivr_options, menthod: @call.post)
         response.say(voice: 'man', message: @call.ivr_main_menu)
-        response.redirect(@call.main_menu)
+        response.gather(numDigits: @call.num_digits, action: @call.ivr_options, method: @call.post, timeout: 20)
       end
 
     when IvrOptions
