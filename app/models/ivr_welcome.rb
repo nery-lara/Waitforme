@@ -2,7 +2,7 @@ class IvrWelcome
 
   def initialize
 
-    @welcome_user = 'Thank you for calling.'
+    @welcome_user = ''
     @ivr_main_menu = '/ivr/main_menu'
 
   end

@@ -17,6 +17,6 @@ Rails.application.routes.draw do
   post 'ivr/welcome'
   post 'ivr/main_menu'
   post 'ivr/options'
-  post 'ivr/call_business_rep'
+  post 'ivr/verify_agent'
 
 end
