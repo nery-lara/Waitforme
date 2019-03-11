@@ -10,7 +10,7 @@ class IvrResponse
       if @call.call_from == @call.business_agent
         @response = Twilio::TwiML::VoiceResponse.new do |response|
           response.dial do |redirect|
-            redirect.conference('conference', muted:@con_call.muted, beep:@con_call.beep)
+            redirect.conference('IVRconference', muted:@con_call.muted, beep:@con_call.beep)
           end
         end
       else
@@ -36,7 +36,7 @@ class IvrResponse
         @response = Twilio::TwiML::VoiceResponse.new do |response|
           response.say(voice: 'man', message: @call.please_wait)
           response.dial do |redirect|
-            redirect.conference('conference', muted:@con_call.muted, beep:@con_call.beep)
+            redirect.conference('IVRconference', muted:@con_call.muted, beep:@con_call.beep)
           end
         end
       else
