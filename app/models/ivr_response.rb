@@ -15,18 +15,14 @@ class IvrResponse
         end
       else
         @response = Twilio::TwiML::VoiceResponse.new do |response|
-          response.redirect(@call.welcome)
+          response.redirect(@call.ivr_main_menu)
         end
-      end
-
-    when IvrWelcome
-      @response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.pause(length: 4)
-        response.redirect(@call.ivr_main_menu)
       end
 
     when IvrMainMenu
       @response = Twilio::TwiML::VoiceResponse.new do |response|
+        response.say(voice: 'man', message: 'Hello')
+        response.pause(length: 10)
         response.say(voice: 'man', message: @call.ivr_main_menu)
         response.gather(numDigits: @call.num_digits, action: @call.ivr_options, method: @call.post, timeout: 20)
       end

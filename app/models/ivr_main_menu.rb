@@ -2,7 +2,7 @@ class IvrMainMenu
 
   def initialize
 
-    @ivr_main_menu = 'Thank you for calling. Press one for business hours. Press two for customer service.'
+    @ivr_main_menu = 'Thank you for calling, press one for business hours. Press two for customer service.'
     @repeat_message = 3
     @num_digits = 1
     @post = 'POST'
