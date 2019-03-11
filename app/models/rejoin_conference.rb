@@ -17,7 +17,11 @@ class RejoinConference
 	end
 
 	def numdigits
-		2
+		1
+	end
+
+	def timeout
+		1
 	end
 
 end

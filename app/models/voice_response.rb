@@ -32,13 +32,13 @@ class VoiceResponse
         response.dial(hangupOnStar: @call.hangupOnStar) do |dial_business|
           dial_business.conference('conference', muted:@con_call.muted, beep:@con_call.beep, statusCallbackEvent:@con_call.statusCallbackEvent, statusCallback:@con_call.statusCallback, statusCallbackMethod:@con_call.statusCallbackMethod)
         end
-        response.gather(action: @call.action, method: @call.request_method, numdigits: @call.numdigits)
+        response.gather(action: @call.action, method: @call.request_method, timeout: @call.timeout, numdigits: @call.numdigits)
         response.redirect('/calls/check_wait_or_exit')
       end
 
     when ConfirmWait
       @response = Twilio::TwiML::VoiceResponse.new do |response|
-        if @call.input == '00'
+        if @call.input == '0'
           response.say(message: @call.message3)
           response.redirect(@call.endpoint1, method:@call.request)
         else
@@ -65,7 +65,7 @@ class VoiceResponse
         response.dial(hangupOnStar: @call.hangupOnStar) do |redirect|
           redirect.conference('conference', muted:@con_call.muted, beep:@con_call.beep, statusCallbackEvent:@con_call.statusCallbackEvent, statusCallback:@con_call.statusCallback, statusCallbackMethod:@con_call.statusCallbackMethod)
         end
-        response.gather(action: @call.action, method: @call.request_method, numdigits: @call.numdigits)
+        response.gather(action: @call.action, method: @call.request_method, timeout: @call.timeout, numdigits: @call.numdigits)
         response.redirect(@call.redirect)
       end
 
