@@ -27,7 +27,7 @@ class ForwardCall
   end
 
   def numdigits
-    1
+    2
   end
 
   def timeout

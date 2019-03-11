@@ -33,6 +33,6 @@ class ForwardCallTest < ActiveSupport::TestCase
 
   test 'Numdigits' do
     forward = ForwardCall.new('3')
-    assert_equal 1, forward.numdigits
+    assert_equal 2, forward.numdigits
   end
 end
