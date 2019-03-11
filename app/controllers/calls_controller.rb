@@ -7,20 +7,21 @@ class CallsController < ApplicationController
   @@user_callSid = ""
   @@business_callSid = ""
   @@waitforme = false
-  @@url = ''
-  @@twilio_number = ""
+  @@url = 'http://f2b6e7ef.ngrok.io'
+  @@twilio_number = "+17073666816"
 
   Rails.logger = Logger.new(STDOUT)
 
-  def start(phone_number)
+  def start
     logger.debug 'inside start'
     @@user_number = params['From']
     @@user_callSid = params['CallSid']
     logger.debug 'user callsid ' + @@user_callSid
-    start_conference = StartConference.new(phone_number)
+    start_conference = StartConference.new
     response = VoiceResponse.new(start_conference)
     render xml: response.xml
   end
+
 
   def dial
     boot_twilio
@@ -33,6 +34,7 @@ class CallsController < ApplicationController
 
   def dial_business(input)
     boot_twilio
+    @@user_number = '+18055709761'
     @@dial_number = input
     @call = @@client.calls.create(
             url: @@url + "/calls/wait_for_business",
@@ -68,7 +70,7 @@ class CallsController < ApplicationController
         logger.debug 'conference Sid is:' + @@conference_Sid
         user = @@client.conferences(@@conference_Sid).fetch
         logger.debug 'here' + user.friendly_name
-        announce = @@client.conferences(@@conference_Sid).participants(@@user_callSid).update(announce_url: @@url + "/calls/connect")
+        #announce = @@client.conferences(@@conference_Sid).participants(@@user_callSid).update(announce_url: @@url + "/calls/connect")
       end
 
       if params["CallSid"] == @@business_callSid
@@ -83,6 +85,7 @@ class CallsController < ApplicationController
   end
 
   def call_user_back
+    logger.debug 'user number' + @@user_number
     call = @@client.calls.create(url: @@url + "/calls/rejoin_conference", from: @@dial_number, to: @@user_number)
   end
 
@@ -166,8 +169,8 @@ class CallsController < ApplicationController
 
   private
   def boot_twilio
-    account_sid = ''
-    auth_token = ''
+    account_sid = 'AC14a0fc7958eb5a457b937744ac590ac4'
+    auth_token = '1ac75e253415d780d1a29466adfaee02'
     @@client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 

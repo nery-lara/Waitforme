@@ -11,7 +11,7 @@ class AlexaController < ApplicationController
     when "LAUNCH_REQUEST" #this case might not be used
       message = "Say something"
     when "INTENT_REQUEST"
-      business_name = input.slots['business']['value']
+      business_name = input.slots['friend']['value']
       puts business_name
       call_business(business_name)
       message = "calling #{business_name} now"
@@ -56,13 +56,20 @@ class AlexaController < ApplicationController
   #   # render xml: response.xml
   # end
   def call_business(business_name)
-    case business_name
-    when "sitao"
-      start("")#phone_number
-    when "yuhao"
-      start("")#phone_number
-    end
-  end
+   puts "in call_business"
+   case business_name
+   when "Jackie"
+     start("+18056405991")#phone_number
+   when "angel"
+     start("+15622784150")
+   when "yuhao"
+     start("+18052801861")
+   when "sitao"
+     start("+18055709761")
+   when "Andrew"
+     start("+15622784150")
+   end
+ end
 
   def start(phone_number)
     call_object = CallsController.new
