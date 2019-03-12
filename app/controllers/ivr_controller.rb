@@ -4,7 +4,7 @@ class IvrController < ApplicationController
 
   def verify_agent
     session = fetch_ivr_session
-    ivr_verify_agent = IvrVerifyAgent.new(session.user.number, session.user.name)
+    ivr_verify_agent = IvrVerifyAgent.new(params[:Caller], session.user.name)
     response = IvrResponse.new(ivr_verify_agent)
     store_ivr_session(session)
     render xml: response.xml
