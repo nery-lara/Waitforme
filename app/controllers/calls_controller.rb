@@ -5,8 +5,8 @@ class CallsController < ApplicationController
   Rails.logger = Logger.new(STDOUT)
 
   def start
-    store_url('http://c2afdccd.ngrok.io')
-    store_twilio_number('7775557777')
+    store_url('http://wfm-env.bpdfssu2jg.us-east-2.elasticbeanstalk.com')
+    store_twilio_number('+17073666816')
     session = create_user
     logger.debug 'user endpoint is ' + session.user.name
     session.user.number = params['From']
@@ -45,6 +45,8 @@ class CallsController < ApplicationController
     client.calls.create(
             url: fetch_url + "/calls/wait_for_business/" + session.user.name,
             to: session.business.number, from: fetch_twilio_number)
+    session.user.number = "+18055709761"
+    store_session(session.user.name, session)
   end
 
   def answered
@@ -144,7 +146,7 @@ class CallsController < ApplicationController
     session = fetch_session(params[:user])
     if params['CallStatus'] == 'completed'
       logger.debug 'user call completed, hang up business'
-      hangup_business(session)
+      hangup_business(user)
     else
       logger.debug 'user call not completed'
       response = Twilio::TwiML::VoiceResponse.new do |response|
@@ -155,7 +157,8 @@ class CallsController < ApplicationController
     end
   end
 
-  def hangup_business(session)
+  def hangup_business(user)
+    session = fetch_session(user)
     client = fetch_client
     client.calls(session.business.sid).update(status: 'completed')
   end
