@@ -11,7 +11,7 @@ class IvrController < ApplicationController
   end
 
   def welcome
-    session = fetch_session(params[:user])
+    session = fetch_ivr_session
     ivr_welcome = IvrWelcome.new(session.user.name)
     response = IvrResponse.new(ivr_welcome, session)
     store_ivr_session(session)
@@ -19,7 +19,7 @@ class IvrController < ApplicationController
   end
 
   def main_menu
-    session = fetch_session(params[:user])
+    session = fetch_ivr_session
     ivr_main_menu = IvrMainMenu.new(session.user.name)
     response = IvrResponse.new(ivr_main_menu, session)
     store_ivr_session(session)
@@ -27,7 +27,7 @@ class IvrController < ApplicationController
   end
 
   def options
-    session = fetch_session(params[:user])
+    session = fetch_ivr_session
     ivr_options = IvrOptions.new(params['Digits'], session.user.name)
     response = IvrResponse.new(ivr_options, session)
     store_ivr_session(session)

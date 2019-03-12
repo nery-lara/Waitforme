@@ -52,6 +52,6 @@ module ApplicationHelper
   end
 
   def fetch_ivr_session
-    cache_get('ivr')
+    YAML::load(cache_get('ivr'))
   end
 end
