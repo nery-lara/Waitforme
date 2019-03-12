@@ -16,6 +16,7 @@ class CallsController < ApplicationController
     start_conference = StartConference.new(session.user.name)
     response = VoiceResponse.new(start_conference, session)
     store_session(session.user.name, session)
+    store_ivr_session(session)
     render xml: response.xml
   end
 
@@ -25,9 +26,7 @@ class CallsController < ApplicationController
     logger.debug 'user params' + params['user']
     session = fetch_session(params[:user])
     session.business.number = params['Digits']
-    if session.business.number == '+15086875082'
-      store_ivr_session(session)
-    end
+    store_ivr_session(session)
     logger.debug 'dial name' + session.user.name
     client = fetch_client
     call = client.calls.create(
