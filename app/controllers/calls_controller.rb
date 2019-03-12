@@ -149,7 +149,7 @@ class CallsController < ApplicationController
     session = fetch_session(params[:user])
     if params['CallStatus'] == 'completed'
       logger.debug 'user call completed, hang up business'
-      hangup_business(sesson.user.name)
+      hangup_business(session.user.name)
     else
       logger.debug 'user call not completed'
       response = Twilio::TwiML::VoiceResponse.new do |response|
