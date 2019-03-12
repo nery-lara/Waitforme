@@ -5,6 +5,7 @@ module ApplicationHelper
     session = Session.new
     session.user.name = create_username
     session.conference.name = 'conference_' + session.user.name
+    session
   end
 
   def create_username
@@ -18,7 +19,7 @@ module ApplicationHelper
   end
 
   def store_session(key, session)
-    cache_set(key, YAML::dump(session)))
+    cache_set(key, YAML::dump(session))
   end
 
   def fetch_client

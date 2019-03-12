@@ -6,7 +6,7 @@ class ForwardCall
     end
 
   def message_1
-    'Forwarding your call now to' + number
+    'Forwarding your call now to' + @number
   end
 
   def message_2

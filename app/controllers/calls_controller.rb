@@ -1,11 +1,12 @@
 class CallsController < ApplicationController
   include ApplicationHelper
   skip_before_action :verify_authenticity_token
-  store_url('http://f784f662.ngrok.io')
-  store_twilio_number('7775557777')
+
   Rails.logger = Logger.new(STDOUT)
 
   def start
+    store_url('http://c2afdccd.ngrok.io')
+    store_twilio_number('7775557777')
     session = create_user
     logger.debug 'user endpoint is ' + session.user.name
     session.user.number = params['From']
@@ -42,7 +43,7 @@ class CallsController < ApplicationController
     client = fetch_client
     session.business.number = input
     client.calls.create(
-            url: fetch_url + "/calls/wait_for_business",
+            url: fetch_url + "/calls/wait_for_business/" + session.user.name,
             to: session.business.number, from: fetch_twilio_number)
   end
 
@@ -50,7 +51,7 @@ class CallsController < ApplicationController
     session = fetch_session(params[:user])
     session.business.sid = params['CallSid']
     logger.debug 'business callsid ' + session.business.sid
-    answered_msg = Answered.new
+    answered_msg = Answered.new(session.user.name)
     response = VoiceResponse.new(answered_msg, session)
     store_session(session.user.name, session)
     render xml: response.xml
@@ -89,9 +90,10 @@ class CallsController < ApplicationController
     store_session(session.user.name, session)
   end
 
-  def wait_for_me
-
-    @@client.conferences(@@conference_Sid).update(status: 'completed')
+  def wait_for_me(user)
+    client = fetch_client
+    session = fetch_session(user)
+    client.conferences(session.conference.sid).update(status: 'completed')
   end
 
   def call_user_back
@@ -125,7 +127,7 @@ class CallsController < ApplicationController
     response = Twilio::TwiML::VoiceResponse.new do |response|
       response.hangup
     end
-    wait_for_me
+    wait_for_me(params[:user])
     render xml: response.to_s
   end
 
@@ -146,7 +148,7 @@ class CallsController < ApplicationController
     else
       logger.debug 'user call not completed'
       response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.gather(action: '/calls/confirm_wait'+ '/' + session.user.name, method: 'POST', timeout: 1numdigits: 2)
+        response.gather(action: '/calls/confirm_wait'+ '/' + session.user.name, method: 'POST', timeout: 1, numdigits: 2)
         response.redirect('/calls/rejoin_conference' + '/' + session.user.name)
       end
       render xml: response.to_s

@@ -25,36 +25,7 @@ class AlexaController < ApplicationController
     render json: output.build_response(session_end)
   end
 
-  # def start(business_number)
-  #   twilio_number = ''
-  #   call = @client.calls.create(
-  #     url:@url + "alexa/call_user",
-  #     to:business_number,
-  #     from:twilio_number
-  #   )
-  #   # forward_call = ForwardCall.new(business_number)
-  #   # response = VoiceResponse.new(forward_call)
-  #   # render xml: response.xml
-  # end
-  #
-  # def answered
-  #   @@business_callSid = params['CallSid']
-  #   logger.debug 'business callsid ' + @@business_callSid
-  #   answered_msg = Answered.new
-  #   response = VoiceResponse.new(answered_msg)
-  #   render xml: response.xml
-  # end
-  #
-  # def call_user
-  #   call = @client.calls.create(
-  #     url:@url + "calls/answered",
-  #     to:phone_number,
-  #     from:twilio_number # another twilio number?
-  #   )
-  #   # forward_call = ForwardCall.new(phone_number)
-  #   # response = VoiceResponse.new(forward_call)
-  #   # render xml: response.xml
-  # end
+
   def call_business(business_name)
    puts "in call_business"
    case business_name

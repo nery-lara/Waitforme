@@ -5,7 +5,7 @@ class WaitForBusiness
     @business_rejoin_conference = '/calls/business_rejoin_conference' + '/' + user_endpoint
     @post = 'POST'
     @speech = 'speech'
-    @wait_for_business = '/calls/wait_for_business'
+    @wait_for_business = '/calls/wait_for_business/' + user_endpoint
     @speech_timeout = 1
 
   end

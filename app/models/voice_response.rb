@@ -40,6 +40,7 @@ class VoiceResponse
                               statusCallback:@con_call.statusCallback,
                               statusCallbackMethod:@con_call.statusCallbackMethod)
         end
+      response.redirect(@call.wait_for_business)
       end
     when WaitForBusiness
       @response = Twilio::TwiML::VoiceResponse.new do |response|
@@ -48,13 +49,11 @@ class VoiceResponse
       end
     when RejoinConference
       @response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.say(message: @call.message_1)
-        response.say(message: @call.message_2)
         response.dial(hangupOnStar: @call.hangupOnStar) do |dial_business|
           dial_business.conference('conference', muted:@con_call.muted, beep:@con_call.beep, statusCallbackEvent:@con_call.statusCallbackEvent, statusCallback:@con_call.statusCallback, statusCallbackMethod:@con_call.statusCallbackMethod)
         end
         response.gather(action: @call.action, method: @call.request_method, timeout: @call.timeout, numdigits: @call.numdigits)
-        response.redirect('/calls/check_wait_or_exit')
+        response.redirect(@call.redirect)
       end
     when ConfirmWait
       @response = Twilio::TwiML::VoiceResponse.new do |response|
