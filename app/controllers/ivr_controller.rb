@@ -1,5 +1,5 @@
 class IvrController < ApplicationController
-
+  include ApplicationHelper
   skip_before_action :verify_authenticity_token
 
   def verify_agent
