@@ -16,7 +16,7 @@ class VoiceResponse
       response.say(message: @call.message_1)
       response.say(message: @call.message_2)
       response.dial(hangupOnStar: @call.hangupOnStar) do |dial_business|
-        dial_business.conference(session.conference.name, muted:@con_call.muted, beep:@con_call.beep,
+        dial_business.conference(@con_call.conf_name, muted:@con_call.muted, beep:@con_call.beep,
                            statusCallbackEvent:@con_call.statusCallbackEvent,
                            statusCallback:@con_call.statusCallback,
                            statusCallbackMethod:@con_call.statusCallbackMethod)
@@ -28,14 +28,14 @@ class VoiceResponse
       @response = Twilio::TwiML::VoiceResponse.new do |response|
       response.say(message: @call.connecting_user)
       response.dial do |redirect|
-        redirect.conference('conference', muted:@con_call.muted, beep:@con_call.beep, statusCallbackEvent:@con_call.statusCallbackEvent, statusCallback:@con_call.statusCallback, statusCallbackMethod:@con_call.statusCallbackMethod)
+        redirect.conference(@con_call.conf_name, muted:@con_call.muted, beep:@con_call.beep, statusCallbackEvent:@con_call.statusCallbackEvent, statusCallback:@con_call.statusCallback, statusCallbackMethod:@con_call.statusCallbackMethod)
         end
       end
     when Answered
       @response = Twilio::TwiML::VoiceResponse.new do |response|
       response.say(message: @call.msg)
       response.dial(hangupOnStar: @call.hangupOnStar) do |dial_back|
-        dial_back.conference(session.conference.name, muted:@con_call.muted, beep:@con_call.beep,
+        dial_back.conference(@con_call.conf_name, muted:@con_call.muted, beep:@con_call.beep,
                               statusCallbackEvent:@con_call.statusCallbackEvent,
                               statusCallback:@con_call.statusCallback,
                               statusCallbackMethod:@con_call.statusCallbackMethod)
@@ -50,7 +50,7 @@ class VoiceResponse
     when RejoinConference
       @response = Twilio::TwiML::VoiceResponse.new do |response|
         response.dial(hangupOnStar: @call.hangupOnStar) do |dial_business|
-          dial_business.conference('conference', muted:@con_call.muted, beep:@con_call.beep, statusCallbackEvent:@con_call.statusCallbackEvent, statusCallback:@con_call.statusCallback, statusCallbackMethod:@con_call.statusCallbackMethod)
+          dial_business.conference(@con_call.conf_name, muted:@con_call.muted, beep:@con_call.beep, statusCallbackEvent:@con_call.statusCallbackEvent, statusCallback:@con_call.statusCallback, statusCallbackMethod:@con_call.statusCallbackMethod)
         end
         response.gather(action: @call.action, method: @call.request_method, timeout: @call.timeout, numdigits: @call.numdigits)
         response.redirect(@call.redirect)

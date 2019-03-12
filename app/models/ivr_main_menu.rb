@@ -1,14 +1,14 @@
 class IvrMainMenu
 
-  def initialize
+  def initialize(user)
 
     @ivr_main_menu = 'Thank you for calling, press one for business hours. Press two for customer service.'
     @repeat_message = 3
     @num_digits = 1
     @post = 'POST'
     @timeout = 1
-    @ivr_options = '/ivr/options'
-    @main_menu = '/ivr/main_menu'
+    @ivr_options = '/ivr/options' + '/' + user
+    @main_menu = '/ivr/main_menu' + '/' + user
 
   end
 

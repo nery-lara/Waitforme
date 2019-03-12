@@ -25,6 +25,9 @@ class CallsController < ApplicationController
     logger.debug 'user params' + params['user']
     session = fetch_session(params[:user])
     session.business.number = params['Digits']
+    if session.business.number == '+15086875082'
+      store_ivr_session(session)
+    end
     logger.debug 'dial name' + session.user.name
     client = fetch_client
     call = client.calls.create(
@@ -146,7 +149,7 @@ class CallsController < ApplicationController
     session = fetch_session(params[:user])
     if params['CallStatus'] == 'completed'
       logger.debug 'user call completed, hang up business'
-      hangup_business(user)
+      hangup_business(sesson.user.name)
     else
       logger.debug 'user call not completed'
       response = Twilio::TwiML::VoiceResponse.new do |response|

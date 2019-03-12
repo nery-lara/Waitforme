@@ -1,8 +1,8 @@
 class IvrResponse
 
-  def initialize(call)
+  def initialize(call, session)
     @call = call
-    @con_call = ConferenceCall.new
+    @con_call = IvrConference.new(session)
 
     case @call
 

@@ -1,6 +1,6 @@
 class IvrOptions
 
-  def initialize(number)
+  def initialize(number, user)
 
     @user_input = number
     @input1 = '1'
@@ -8,7 +8,7 @@ class IvrOptions
     @input2 = '2'
     @please_wait = 'All of our agents are currently busy. Your call is important to us, please hold and your call will be answered in the order it was received'
     @return_main_menu = 'Sorry I did not understand, returning to main menu.'
-    @ivr_main_menu = '/ivr/main_menu'
+    @ivr_main_menu = '/ivr/main_menu' + '/' + user
 
   end
 

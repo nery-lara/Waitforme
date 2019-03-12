@@ -1,11 +1,10 @@
 class IvrVerifyAgent
 
-  def initialize(number)
+  def initialize(number, user)
     @call_from = number
     @business_agent = '+18056405991'
-    @agent_join_conference = '/ivr/agent_join_conference'
-    @ivr_main_menu = '/ivr/main_menu'
+    @ivr_main_menu = '/ivr/main_menu' + '/' + user
   end
 
-  attr_reader :call_from, :business_agent, :agent_join_conference, :ivr_main_menu
+  attr_reader :call_from, :business_agent, :ivr_main_menu
 end

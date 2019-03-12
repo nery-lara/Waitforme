@@ -46,4 +46,12 @@ module ApplicationHelper
   def store_twilio_number(number)
     cache_set('twilio_number', number)
   end
+
+  def store_ivr_session(session)
+    cache_set('ivr', YAML::dump(session))
+  end
+
+  def fetch_ivr_session
+    cache_get('ivr')
+  end
 end

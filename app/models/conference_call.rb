@@ -26,6 +26,6 @@ class ConferenceCall
 
 	def conf_name
 		#session.conference.name
-		'conference'
+		'conference' + @session.user.name
 	end
 end
