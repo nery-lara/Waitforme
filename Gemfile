@@ -18,7 +18,9 @@ gem 'uglifier', '>= 1.3.0'
 
 # Twilio library
 gem 'twilio-ruby'
-
+gem 'redis'
+gem 'redis-rails'
+gem 'redis-namespace'
 # Alexa
 gem 'alexa_rubykit'
 

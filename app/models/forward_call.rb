@@ -1,10 +1,9 @@
 class ForwardCall
 
-  attr_reader :number
-
-  def initialize(number)
-    @number = number
-  end
+    def initialize(number, user_endpoint)
+        @number = number
+        @user_endpoint = user_endpoint
+    end
 
   def message_1
     'Forwarding your call now to' + number
@@ -19,7 +18,7 @@ class ForwardCall
   end
 
   def action
-    '/calls/confirm_wait'
+    '/calls/confirm_wait' + '/' + @user_endpoint
   end
 
   def request_method

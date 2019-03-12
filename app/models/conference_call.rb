@@ -1,5 +1,9 @@
 class ConferenceCall
 
+	def initialize(session)
+		@session = session
+	end
+
 	def muted
 		'False'
 	end
@@ -12,12 +16,16 @@ class ConferenceCall
 		'join leave'
 	end
 
-	def statusCallback
-		'/calls/conference'
-	end
+  def statusCallback
+  	'/calls/conference/' + @session.user.name
+  end
 
-	def statusCallbackMethod
-		'POST'
-	end
+  def statusCallbackMethod
+  	'POST'
+  end
 
+	def conf_name
+		#session.conference.name
+		'conference'
+	end
 end
