@@ -39,6 +39,8 @@ class AlexaController < ApplicationController
      start("+18055709761")
    when "Andrew"
      start("+15622784150")
+   when "andrew"
+     start("+15622784150")
    end
  end
 
